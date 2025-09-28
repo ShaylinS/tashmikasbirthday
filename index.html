@@ -23,6 +23,7 @@
       color:var(--ink);
       background: radial-gradient(1200px 800px at 80% -10%, #1a1a22 0%, #101014 60%, #0b0b0e 100%);
       line-height:1.6;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
     a{color:var(--brand);text-decoration:none}
     a:hover{opacity:.9}
@@ -98,6 +99,96 @@
     .love-letter .body p{margin:0 0 12px;color:var(--muted)}
 
     footer{padding:40px 0; color:var(--muted); text-align:center}
+
+    /* ===== Star Certificate ===== */
+    .star{display:grid; gap:16px}
+    .star-card{position:relative;padding:18px;border-radius:16px;border:1px solid var(--border);
+      background:linear-gradient(180deg,#15151c,#0e0e13);box-shadow:var(--shadow)}
+    .star-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#0f0f12;
+      background:linear-gradient(135deg,#ff9db5,#ffd36e);padding:6px 10px;border-radius:999px;font-weight:700}
+    .star-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+    .star-meta .k{color:var(--muted);font-size:12px}
+    .star-meta .v{font-weight:600}
+    .star-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .star-actions a{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ffd36e,#fff0b8);
+      color:#0f0f12;padding:10px 12px;border-radius:12px;font-weight:600}
+
+    /* Centered certificate image beneath the deed */
+    .cert-wrap{
+      display:grid;
+      justify-items:center;        /* center horizontally */
+      margin-top:14px;
+    }
+    .cert-figure{
+      margin:0;
+      width:min(820px, 100%);      /* cap width and stay responsive */
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:#0c0c10;
+      box-shadow:var(--shadow);
+    }
+    .cert-figure img{
+      display:block;
+      width:100%;
+      height:auto;                 /* keep aspect */
+      vertical-align:top;          /* kill inline gaps */
+    }
+    .cert-caption{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:8px;
+    }
+	<script>
+(function () {
+  const btn = document.getElementById('findStarBtn');
+  const msg = document.getElementById('findMsg');
+  if (!btn) return;
+
+  async function copyStarId(id) {
+    try {
+      await navigator.clipboard.writeText(id);
+      return true;
+    } catch (err) {
+      try {
+        // Fallback for older browsers / http local dev
+        const t = document.createElement('textarea');
+        t.value = id;
+        t.setAttribute('readonly', '');
+        t.style.position = 'absolute';
+        t.style.left = '-9999px';
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+  }
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const id = (btn.getAttribute('data-star-id') || '1743202').trim();
+
+    const ok = await copyStarId(id);
+    if (msg) {
+      msg.textContent = ok
+        ? `Unique ID ${id} copied. Paste it into the “Unique ID” field on the next page.`
+        : `Unique ID: ${id} — copy failed. Long-press to copy manually.`;
+      msg.style.display = 'block';
+      msg.style.opacity = '1';
+      setTimeout(() => { msg.style.opacity = '.8'; }, 1500);
+    }
+
+    // Open the official mobile finder in a new tab
+    window.open('https://m.star-register.org/', '_blank', 'noopener');
+  });
+})();
+</script>
+
   </style>
 </head>
 <body>
@@ -123,7 +214,6 @@
           </video>
           <button class="overlay-play" aria-label="Play birthday video">
             <div class="play"></div>
-
           </button>
         </div>
       </section>
@@ -141,9 +231,111 @@
         </div>
       </section>
 
-      <!-- Hints -->
+      <!-- Memory Lane -->
+      <section class="section" id="memory">
+        <h2>Little Time-Capsules</h2>
+        <div class="timeline">
+          <div class="moment">
+            <div class="img"><img src="pic1.jpg" alt="Us — first photo" loading="lazy" decoding="async"></div>
+            <div>
+              <h4>Our first photo</h4>
+              <p class="muted">Caption goes here. Keep it short and true.</p>
+            </div>
+          </div>
+          <div class="moment">
+            <div class="img"><img src="pic3.jpg" alt="Two little beans" loading="lazy" decoding="async"></div>
+            <div>
+              <h4>Two little beans</h4>
+              <p class="muted">My life was nothing until it wasn't.</p>
+            </div>
+          </div>
+          <div class="moment">
+            <div class="img"><img src="pic2.jpg" alt="My favourite" loading="lazy" decoding="async"></div>
+            <div>
+              <h4>The eyes I will forever be lost in.</h4>
+              <p class="muted">Keep this one for us.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Star Certificate -->
+      <section class="section star" id="star">
+       <h2 style="text-align:center">Tashmika’s Star</h2>
+
+<p class="muted" style="text-align:center;max-width:760px;margin:12px auto 0">
+  I named this star for you because, across all our years, you’ve been the quiet light that never asks to be seen and still makes everything easier to find. When days were heavy, you steadied me; when the world was loud, you made room for breath. I wanted a place that doesn’t fade, a way to keep your name where time can’t touch it—so I chose the sky. Now when I’m unsure of the road, I’ll look up and there you’ll be: constant, patient, and ours.
+</p>
+
+
+        <article class="star-card">
+          <span class="star-badge" aria-hidden="true">You're my everglowing star</span>
+          <h3 style="margin:10px 0 6px">Tashmika’s Everglow — 29 September 2025</h3>
+          <p class="muted" style="margin:0 0 8px">
+            Registered in the Star-Name-Registry and placed within the constellation <strong>Cassiopeia</strong>.
+            Coordinates below match the astronomically recorded position.
+          </p>
+
+          <div class="star-meta">
+            <div>
+              <div class="k">Constellation</div>
+              <div class="v">Cassiopeia</div>
+            </div>
+            <div>
+              <div class="k">Magnitude</div>
+              <div class="v">~12.13</div>
+            </div>
+            <div>
+              <div class="k">Right Ascension</div>
+              <div class="v">23h 16m 28.56s</div>
+            </div>
+            <div>
+              <div class="k">Declination</div>
+              <div class="v">+54° 40′ 57.42″</div>
+            </div>
+            <div>
+              <div class="k">Registry ID</div>
+              <div class="v">1743202</div>
+            </div>
+            <div>
+              <div class="k">Date</div>
+              <div class="v">29 Sep 2025</div>
+            </div>
+          </div>
+
+<div class="star-actions">
+  <a href="1743202.pdf" download="Tashmika_Star_Certificate.pdf">Download Certificate (PDF)</a>
+  <a href="sky-atlas.pdf" download="Tashmika_Star_Map.pdf">Download Star Map (PDF)</a>
+
+  <!-- New: Find on Star Register (copies ID + opens site) -->
+  <a id="findStarBtn"
+     href="https://m.star-register.org/"
+     target="_blank"
+     rel="noopener"
+     data-star-id="1743202"
+     aria-label="Open Star Register (Unique ID 1743202 will be copied)">
+    Find on Star Register
+  </a>
+</div>
+
+<!-- Tiny helper message (optional) -->
+<small id="findMsg" class="muted" style="display:block;margin-top:6px;opacity:.8">
+  Tip: this button copies your Unique ID so you can paste it on the Star Register page.
+</small>
+
+          <!-- Centered certificate image underneath -->
+          <div class="cert-wrap">
+            <figure class="cert-figure">
+              <img src="star.jpg" alt="Star certificate — Tashmika’s Everglow">
+            </figure>
+            <figcaption class="cert-caption">Certificate preview • Open/download above for full quality</figcaption>
+          </div>
+        </article>
+      </section>
+
+      <!-- Whispers -->
       <section class="section" id="hints">
-        <h2>Whispers for the 5th</h2>
+        <h2>Whispers for the 5th...</h2>
         <p class="muted">No big spoilers. Just crumbs…</p>
         <div class="cards">
           <article class="card">
@@ -172,34 +364,6 @@
         </div>
       </section>
 
-      <!-- Memory Lane -->
-      <section class="section" id="memory">
-        <h2>Little Time-Capsules</h2>
-        <div class="timeline">
-          <div class="moment">
-            <div class="img"><img src="pic1.jpg" alt="Us — first photo" loading="lazy" decoding="async"></div>
-            <div>
-              <h4>Our first photo</h4>
-              <p class="muted">We never once knew how much we'd be so in love.</p>
-            </div>
-          </div>
-          <div class="moment">
-            <div class="img"><img src="pic3.jpg" alt="Two little beans" loading="lazy" decoding="async"></div>
-            <div>
-              <h4>Two little beans</h4>
-              <p class="muted">My life was nothing until it wasn't.</p>
-            </div>
-          </div>
-          <div class="moment">
-            <div class="img"><img src="pic2.jpg" alt="My favourite" loading="lazy" decoding="async"></div>
-            <div>
-              <h4>The eyes I will forever be lost in.</h4>
-              <p class="muted">Keep this one for us.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- Concert + Ticket -->
       <section class="section" id="concert">
         <h2>Candlelight, Later</h2>
@@ -218,13 +382,13 @@
             <p class="muted">Your ticket is already attached — just tap below to download it when you're ready.</p>
             <div class="ticket">
               <span id="ticketLabel">Candlelight: Tribute to Coldplay — Tashmika Debipersad</span>
-              <a href="ticket1.pdf" download="Candlelight_Ticket_Tashmika.pdf">Download Ticket</a>
+              <a href="ticket.pdf" download="Candlelight_Ticket_Tashmika.pdf">Download Ticket</a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Coming-soon photoshoot film (placeholder) -->
+      <!-- Coming-soon film -->
       <section class="section" id="film">
         <div class="video-wrap" aria-label="Coming-soon film">
           <div class="video-frame">
@@ -262,19 +426,28 @@
 
       overlay.addEventListener('click', async ()=>{
         const src = (video.querySelector('source')?.getAttribute('src')||'').trim();
-        if(!src){ const note = overlay.querySelector('.note'); if(note) note.textContent = 'Soon ✨'; return; }
+        if(!src){
+          const note = overlay.querySelector('.note');
+          if(note) note.textContent = 'Soon ✨';
+          return;
+        }
         overlay.style.display='none'; video.controls=true;
         try{ await video.play(); }catch(e){ overlay.style.display='grid'; video.controls=false; }
       });
 
       video.addEventListener('pause', ()=>{
-        if(video.currentTime===0 || video.ended){ overlay.style.display='grid'; video.controls=false; }
+        if(video.currentTime===0 || video.ended){
+          overlay.style.display='grid'; video.controls=false;
+        }
       });
     });
 
     // Gentle glow on the 5th
-    try{ if(new Date().getDate()===5){ document.getElementById('hints').style.boxShadow='0 0 0 2px var(--ring)'; } }catch(e){}
+    try{
+      if(new Date().getDate()===5){
+        document.getElementById('hints').style.boxShadow='0 0 0 2px var(--ring)';
+      }
+    }catch(e){}
   </script>
 </body>
 </html>
-
