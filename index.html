@@ -75,15 +75,22 @@
     .moment h4{margin:0 0 6px}
     @media (max-width:900px){ .moment{grid-template-columns:1fr} }
 
-    /* Candlelight Concert */
+    /* Candlelight Concert (fixed overlap) */
     .concert{display:grid; grid-template-columns:1.2fr .8fr; gap:16px; align-items:stretch}
     @media (max-width:900px){ .concert{grid-template-columns:1fr} }
-    .candle-card{position:relative; padding:18px; border-radius:16px; border:1px solid var(--border); background:linear-gradient(180deg,#15151c,#0e0e13); box-shadow:var(--shadow)}
-    .candles{position:absolute; inset:0; pointer-events:none; opacity:.9}
+    .candle-card{position:relative; padding:18px; border-radius:16px; border:1px solid var(--border); background:linear-gradient(180deg,#15151c,#0e0e13); box-shadow:var(--shadow); overflow:hidden;}
+    .candles{position:absolute; inset:0; pointer-events:none; opacity:.9; z-index:0;}
+    .candle-card > :not(.candles){position:relative; z-index:1;} /* ensure text/buttons always above flames */
     .candle{position:absolute; bottom:12px; width:6px; height:60px; background:linear-gradient(180deg,#333,#111); border-radius:4px; box-shadow:0 10px 24px rgba(0,0,0,.6)}
     .candle:before{content:""; position:absolute; top:-16px; left:-1px; width:8px; height:16px; background:radial-gradient(50% 60% at 50% 60%, var(--brand), transparent 70%); border-radius:50% 50% 40% 40%; filter:blur(1px); animation:flicker 2.2s infinite ease-in-out}
     .candle:nth-child(1){left:18%} .candle:nth-child(2){left:36%} .candle:nth-child(3){left:54%} .candle:nth-child(4){left:72%}
     @keyframes flicker{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-1px) scale(1.06)}}
+    @media (max-width:900px){
+      .candles{opacity:.65;}
+      .candle-card{padding-bottom:28px;}
+      .candle{height:42px; bottom:8px;}
+      .candle:before{top:-12px; height:12px;}
+    }
 
     /* Ticket */
     .ticket{margin-top:10px; padding:12px; border:1px dashed rgba(255,255,255,.25); border-radius:14px;
@@ -114,81 +121,13 @@
       color:#0f0f12;padding:10px 12px;border-radius:12px;font-weight:600}
 
     /* Centered certificate image beneath the deed */
-    .cert-wrap{
-      display:grid;
-      justify-items:center;        /* center horizontally */
-      margin-top:14px;
-    }
+    .cert-wrap{ display:grid; justify-items:center; margin-top:14px; }
     .cert-figure{
-      margin:0;
-      width:min(820px, 100%);      /* cap width and stay responsive */
-      border:1px solid var(--border);
-      border-radius:14px;
-      overflow:hidden;
-      background:#0c0c10;
-      box-shadow:var(--shadow);
+      margin:0; width:min(820px, 100%);
+      border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#0c0c10; box-shadow:var(--shadow);
     }
-    .cert-figure img{
-      display:block;
-      width:100%;
-      height:auto;                 /* keep aspect */
-      vertical-align:top;          /* kill inline gaps */
-    }
-    .cert-caption{
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-      margin-top:8px;
-    }
-	<script>
-(function () {
-  const btn = document.getElementById('findStarBtn');
-  const msg = document.getElementById('findMsg');
-  if (!btn) return;
-
-  async function copyStarId(id) {
-    try {
-      await navigator.clipboard.writeText(id);
-      return true;
-    } catch (err) {
-      try {
-        // Fallback for older browsers / http local dev
-        const t = document.createElement('textarea');
-        t.value = id;
-        t.setAttribute('readonly', '');
-        t.style.position = 'absolute';
-        t.style.left = '-9999px';
-        document.body.appendChild(t);
-        t.select();
-        document.execCommand('copy');
-        document.body.removeChild(t);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    }
-  }
-
-  btn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const id = (btn.getAttribute('data-star-id') || '1743202').trim();
-
-    const ok = await copyStarId(id);
-    if (msg) {
-      msg.textContent = ok
-        ? `Unique ID ${id} copied. Paste it into the “Unique ID” field on the next page.`
-        : `Unique ID: ${id} — copy failed. Long-press to copy manually.`;
-      msg.style.display = 'block';
-      msg.style.opacity = '1';
-      setTimeout(() => { msg.style.opacity = '.8'; }, 1500);
-    }
-
-    // Open the official mobile finder in a new tab
-    window.open('https://m.star-register.org/', '_blank', 'noopener');
-  });
-})();
-</script>
-
+    .cert-figure img{ display:block; width:100%; height:auto; vertical-align:top; }
+    .cert-caption{ text-align:center; color:var(--muted); font-size:12px; margin-top:8px; }
   </style>
 </head>
 <body>
@@ -261,12 +200,11 @@
 
       <!-- Star Certificate -->
       <section class="section star" id="star">
-       <h2 style="text-align:center">Tashmika’s Star</h2>
+        <h2 style="text-align:center">Tashmika’s Star</h2>
 
-<p class="muted" style="text-align:center;max-width:760px;margin:12px auto 0">
-  I named this star for you because, across all our years, you’ve been the quiet light that never asks to be seen and still makes everything easier to find. When days were heavy, you steadied me; when the world was loud, you made room for breath. I wanted a place that doesn’t fade, a way to keep your name where time can’t touch it—so I chose the sky. Now when I’m unsure of the road, I’ll look up and there you’ll be: constant, patient, and ours.
-</p>
-
+        <p class="muted" style="text-align:center;max-width:760px;margin:12px auto 0">
+          I named this star for you because, across all our years, you’ve been the quiet light that never asks to be seen and still makes everything easier to find. When days were heavy, you steadied me; when the world was loud, you made room for breath. I wanted a place that doesn’t fade, a way to keep your name where time can’t touch it—so I chose the sky. Now when I’m unsure of the road, I’ll look up and there you’ll be: constant, patient, and ours.
+        </p>
 
         <article class="star-card">
           <span class="star-badge" aria-hidden="true">You're my everglowing star</span>
@@ -303,29 +241,28 @@
             </div>
           </div>
 
-<div class="star-actions">
-  <a href="1743202.pdf" download="Tashmika_Star_Certificate.pdf">Download Certificate (PDF)</a>
-  <a href="sky-atlas.pdf" download="Tashmika_Star_Map.pdf">Download Star Map (PDF)</a>
-
-  <!-- New: Find on Star Register (copies ID + opens site) -->
-  <a id="findStarBtn"
-     href="https://m.star-register.org/"
-     target="_blank"
-     rel="noopener"
-     data-star-id="1743202"
-     aria-label="Open Star Register (Unique ID 1743202 will be copied)">
-    Find on Star Register
-  </a>
-</div>
-
-<!-- Tiny helper message (optional) -->
+          <div class="star-actions">
+            <a href="1743202.pdf" download="Tashmika_Star_Certificate.pdf">Download Certificate (PDF)</a>
+            <a href="sky-atlas.pdf" download="Tashmika_Star_Map.pdf">Download Star Map (PDF)</a>
+            <a id="findStarBtn"
+               href="https://m.star-register.org/"
+               target="_blank"
+               rel="noopener"
+               data-star-id="1743202"
+               aria-label="Open Star Register (Unique ID 1743202 will be copied)">
+              Find on Star Register
+            </a>
+          </div>
+          <small id="findMsg" class="muted" style="display:block;margin-top:6px;opacity:.8">
+            Tip: this button copies your Unique ID so you can paste it on the Star Register page.
+          </small>
 
           <!-- Centered certificate image underneath -->
           <div class="cert-wrap">
             <figure class="cert-figure">
-              <img src="star.JPG" alt="Star certificate — Tashmika’s Everglow">
+              <img src="star.jpg" alt="Star certificate — Tashmika’s Everglow">
             </figure>
-    
+            <figcaption class="cert-caption">Certificate preview • Open/download above for full quality</figcaption>
           </div>
         </article>
       </section>
@@ -375,6 +312,9 @@
           </div>
 
           <div class="candle-card">
+            <div class="candles" aria-hidden="true">
+              <div class="candle"></div><div class="candle"></div><div class="candle"></div><div class="candle"></div>
+            </div>
             <h3 style="margin-top:0">Your Ticket</h3>
             <p class="muted">Your ticket is already attached — just tap below to download it when you're ready.</p>
             <div class="ticket">
@@ -445,8 +385,49 @@
         document.getElementById('hints').style.boxShadow='0 0 0 2px var(--ring)';
       }
     }catch(e){}
+
+    // Star Register helper: copy ID then open finder
+    (function () {
+      const btn = document.getElementById('findStarBtn');
+      const msg = document.getElementById('findMsg');
+      if (!btn) return;
+
+      async function copyStarId(id) {
+        try {
+          await navigator.clipboard.writeText(id);
+          return true;
+        } catch (err) {
+          try {
+            const t = document.createElement('textarea');
+            t.value = id;
+            t.setAttribute('readonly', '');
+            t.style.position = 'absolute';
+            t.style.left = '-9999px';
+            document.body.appendChild(t);
+            t.select();
+            document.execCommand('copy');
+            document.body.removeChild(t);
+            return true;
+          } catch (_) {
+            return false;
+          }
+        }
+      }
+
+      btn.addEventListener('click', async (e) => {
+        // allow link to open; also copy ID
+        const id = (btn.getAttribute('data-star-id') || '1743202').trim();
+        const ok = await copyStarId(id);
+        if (msg) {
+          msg.textContent = ok
+            ? `Unique ID ${id} copied. Paste it into the “Unique ID” field on the next page.`
+            : `Unique ID: ${id} — copy failed. Long-press to copy manually.`;
+          msg.style.display = 'block';
+          msg.style.opacity = '1';
+          setTimeout(() => { msg.style.opacity = '.8'; }, 1500);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
-
-
